@@ -5,12 +5,32 @@ import flask
 
 app = flask.Flask(__name__)
 
-@app.route('/netflix/original-content', methods=['GET', 'POST'])
-def crud():
+@app.route('/netflix/original-content', methods=['GET'])
+def list_and_filter():
     if flask.request.method == 'GET':
+        query = 'SELECT * FROM original_content'
+        args = flask.request.args
+        valid_args = ['type', 'genre', 'imdb_rating']
+        actual_valid_args = []
+
+        for arg in args:
+            if arg in valid_args:
+                actual_valid_args.append(arg)
+        
+        if len(actual_valid_args) > 0:
+            query += ' WHERE'
+            for i,arg in enumerate(actual_valid_args):
+                query += ' {arg}'.format(arg=arg)
+                if flask.request.args.get(arg) == 'NULL':
+                    query += ' IS NULL'
+                else:
+                    query += '="{arg_value}"'.format(arg=arg, arg_value=flask.request.args.get(arg))
+                if i < len(actual_valid_args)-1:
+                    query += ','
+        
         sqlite_conn = get_database_connection('./mac/original_content.db')
         sqlite_cursor = sqlite_conn.cursor()
-        sqlite_cursor.execute('SELECT * FROM original_content')
+        sqlite_cursor.execute(query)
         data = sqlite_cursor.fetchall()
         result = convert_cursor_to_json(data)
         return json.dumps(result)
