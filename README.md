@@ -2,9 +2,6 @@
 
 ## Microservicio de Administración de Contenido (MAC)
 
-En la siguiente figura se muestra el diseño del microservicio actual:
-![Vista de contenedores del SMAM](docs/diagrama.png)
-
 ## Prerrequisitos
 - Clonar el repositorio:
    ```shell
@@ -94,10 +91,14 @@ Para probar los endpoints se pueden realizar a través de un navegador web, una 
 
 ## Versión
 
-2.0.0 - Marzo 2020
+3.0.0 - Mayo 2020
 
 ## Autores
 
 * **Perla Velasco**
 * **Yonathan Martínez**
 * **Sergio Salazar**
+* **Salvador Loera**
+* **Francisco Varela**
+* **Bryan Villa**
+* **Manuel Herrera**
