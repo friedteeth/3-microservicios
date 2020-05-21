@@ -133,7 +133,7 @@ Para probar los endpoints se pueden realizar a través de un navegador web, una 
 
    Consultamos el contenido original recién agregado.
    ```shell
-   $ curl -X GET localhost:8084/netflix/original-content/2
+   $ curl -X GET localhost:8084/netflix/original-content/3
    ```
 
    Respuesta:
@@ -143,7 +143,7 @@ Para probar los endpoints se pueden realizar a través de un navegador web, una 
 
    Se actualiza los datos de un contenido original existente.
    ```shell
-   $ curl -H "Content-Type: application/json" -d "{\"genre\":\"Thriller\"}" -X PATCH http://localhost:8084/netflix/original-content/1
+   $ curl -H "Content-Type: application/json" -d "{\"genre\":\"Thriller\"}" -X PATCH http://localhost:8084/netflix/original-content/3
    ```
 
    Respuesta:
@@ -153,7 +153,7 @@ Para probar los endpoints se pueden realizar a través de un navegador web, una 
 
    Consultamos nuevamente el contenido original recién actualizado.
    ```shell
-   $ curl -X GET localhost:8084/netflix/original-content/2
+   $ curl -X GET localhost:8084/netflix/original-content/3
    ```
 
    Respuesta:

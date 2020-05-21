@@ -26,7 +26,7 @@ def list_and_filter():
                 else:
                     query += '="{arg_value}"'.format(arg_value=flask.request.args.get(arg))
                 if i < len(actual_valid_args)-1:
-                    query += ','
+                    query += ' AND'
         
         sqlite_conn = get_database_connection('./mac/original_content.db')
         sqlite_cursor = sqlite_conn.cursor()
