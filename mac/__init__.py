@@ -13,7 +13,7 @@ def api_gateway(path):
     if flask.request.method == 'PATCH' and re.match('^netflix[/]original-content[/][0-9]+$', path):
         return requests.patch('http://127.0.0.1:8086/' + path, json=flask.request.get_json()).content
     elif flask.request.method == 'POST' and re.match('^netflix[/]original-content$', path):
-        return requests.post('http://127.0.0.1:8087/' + path, data=flask.request.data).content
+        return requests.post('http://127.0.0.1:8087/' + path, json=flask.request.get_json()).content
     elif flask.request.method == 'GET' and re.match('^netflix[/]original-content[/][0-9]+$', path):
         return requests.get('http://127.0.0.1:8086/' + path).content
     elif flask.request.method == 'GET' and len(flask.request.args) > 0:
