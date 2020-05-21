@@ -2,54 +2,26 @@ import sqlite3
 import json
 
 import flask
+import re
+import requests
 
 app = flask.Flask(__name__)
 
-@app.route('/netflix/original-content', methods=['GET'])
-def list_and_filter():
-    if flask.request.method == 'GET':
-        query = 'SELECT * FROM original_content'
-        args = flask.request.args
-        valid_args = ['type', 'genre', 'imdb_rating']
-        actual_valid_args = []
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>', methods=['GET', 'POST', 'PATCH'])
+def api_gateway(path):
+    if flask.request.method == 'PATCH' and re.match('^netflix[/]original-content[/][0-9]+$', path):
+        return requests.patch('http://127.0.0.1:8086/' + path, json=flask.request.get_json()).content
+    elif flask.request.method == 'POST' and re.match('^netflix[/]original-content$', path):
+        return requests.post('http://127.0.0.1:8087/' + path, data=flask.request.data).content
+    elif flask.request.method == 'GET' and re.match('^netflix[/]original-content[/][0-9]+$', path):
+        return requests.get('http://127.0.0.1:8086/' + path).content
+    elif flask.request.method == 'GET' and len(flask.request.args) > 0:
+        return requests.get('http://127.0.0.1:8085/' + path, params=flask.request.args).content
+    elif flask.request.method == 'GET' and re.match('^netflix[/]original-content$', path):
+        return requests.get('http://127.0.0.1:8085/' + path).content
 
-        for arg in args:
-            if arg in valid_args:
-                actual_valid_args.append(arg)
-        
-        if len(actual_valid_args) > 0:
-            query += ' WHERE'
-            for i,arg in enumerate(actual_valid_args):
-                query += ' {arg}'.format(arg=arg)
-                if flask.request.args.get(arg) == 'NULL':
-                    query += ' IS NULL'
-                else:
-                    query += '="{arg_value}"'.format(arg=arg, arg_value=flask.request.args.get(arg))
-                if i < len(actual_valid_args)-1:
-                    query += ','
-        
-        sqlite_conn = get_database_connection('./mac/original_content.db')
-        sqlite_cursor = sqlite_conn.cursor()
-        sqlite_cursor.execute(query)
-        data = sqlite_cursor.fetchall()
-        result = convert_cursor_to_json(data)
-        return json.dumps(result)
-
-def get_database_connection(database_path):
-    conn = sqlite3.connect(database_path)
-    return conn
-
-def convert_cursor_to_json(cursor_data):
-    result_list = []
-    for e in cursor_data:
-        temp_dict = {}
-        temp_dict['id'] = e[0]
-        temp_dict['name'] = e[1]
-        temp_dict['type'] = e[2]
-        temp_dict['genre'] = e[3]
-        temp_dict['imdb_rating'] = e[4]
-        result_list.append(temp_dict)
-    return result_list
+    return 'You want path: %s' % path
 
 if __name__ == '__main__':
     # Se ejecuta el servicio definiendo el host '0.0.0.0' 
